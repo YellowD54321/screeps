@@ -1,4 +1,4 @@
-const { COLOR, MOVE } = require("./contant");
+const { COLOR, ACTION } = require("./contant");
 const { getStructureHitPoint, setStructureHitPoint } = require("./common");
 const { handleHarvest } = require("./role_regular");
 const roleBuilder = {
@@ -7,7 +7,7 @@ const roleBuilder = {
     const roomName = room;
     const creepStateMachine = {
       states: {
-        [MOVE.HARVEST]: {
+        [ACTION.HARVEST]: {
           run: function (allCreeps) {
             handleHarvest(this, allCreeps, roomName);
           },
@@ -15,14 +15,14 @@ const roleBuilder = {
             if (this.store.getFreeCapacity() > 0) return;
             setNextTargetConstruct(this, roomName);
             if (hasNoTarget(this)) {
-              this.memory.state = MOVE.UPGRADE;
+              this.memory.state = ACTION.UPGRADE;
               return;
             }
-            this.memory.state = this.memory.targetConstruct.move;
+            this.memory.state = this.memory.targetConstruct.action;
             return;
           },
         },
-        [MOVE.BUILD]: {
+        [ACTION.BUILD]: {
           run: function (allCreeps) {
             const targetConstruct = Game.getObjectById(
               this.memory.targetConstruct.id
@@ -36,7 +36,7 @@ const roleBuilder = {
           transition: function (allCreeps) {
             const missionComplete = isMissionComplete(this);
             if (creep.store[RESOURCE_ENERGY] == 0) {
-              this.memory.state = MOVE.HARVEST;
+              this.memory.state = ACTION.HARVEST;
               return;
             }
             if (!missionComplete) {
@@ -44,13 +44,13 @@ const roleBuilder = {
             }
             setNextTargetConstruct(this, roomName);
             if (hasNoTarget(this)) {
-              this.memory.state = MOVE.UPGRADE;
+              this.memory.state = ACTION.UPGRADE;
               return;
             }
-            this.memory.state = this.memory.targetConstruct.move;
+            this.memory.state = this.memory.targetConstruct.action;
           },
         },
-        [MOVE.REPAIR]: {
+        [ACTION.REPAIR]: {
           run: function (allCreeps) {
             const targetConstruct = Game.getObjectById(
               this.memory.targetConstruct.id
@@ -64,7 +64,7 @@ const roleBuilder = {
           transition: function (allCreeps) {
             const missionComplete = isMissionComplete(this);
             if (creep.store[RESOURCE_ENERGY] == 0) {
-              this.memory.state = MOVE.HARVEST;
+              this.memory.state = ACTION.HARVEST;
               return;
             }
             if (!missionComplete) {
@@ -72,13 +72,13 @@ const roleBuilder = {
             }
             setNextTargetConstruct(this, roomName);
             if (hasNoTarget(this)) {
-              this.memory.state = MOVE.UPGRADE;
+              this.memory.state = ACTION.UPGRADE;
               return;
             }
-            this.memory.state = this.memory.targetConstruct.move;
+            this.memory.state = this.memory.targetConstruct.action;
           },
         },
-        [MOVE.UPGRADE]: {
+        [ACTION.UPGRADE]: {
           run: function (allCreeps) {
             if (
               this.upgradeController(this.room.controller) == ERR_NOT_IN_RANGE
@@ -90,7 +90,7 @@ const roleBuilder = {
           },
           transition: function (allCreeps) {
             if (creep.store[RESOURCE_ENERGY] == 0) {
-              this.memory.state = MOVE.HARVEST;
+              this.memory.state = ACTION.HARVEST;
             }
           },
         },

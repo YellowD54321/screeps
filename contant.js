@@ -7,12 +7,14 @@ const COLOR = {
   HARVEST: "#ffffff",
 };
 
-const MOVE = {
+const ACTION = {
+  IDLE: "IDLE",
   HARVEST: "HARVEST",
   FEED: "FEED",
   UPGRADE: "UPGRADE",
   BUILD: "BUILD",
   REPAIR: "REPAIR",
+  ATTACK: "ATTACK",
 };
 
-module.exports = { HARVESTER, BUILDER, COLOR, MOVE };
+module.exports = { HARVESTER, BUILDER, COLOR, ACTION };

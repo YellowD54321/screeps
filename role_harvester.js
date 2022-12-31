@@ -1,4 +1,4 @@
-const { COLOR, MOVE } = require("./contant");
+const { COLOR, ACTION } = require("./contant");
 const { handleHarvest } = require("./role_regular");
 const roleHarvester = {
   /** @param {Creep} creep **/
@@ -17,17 +17,17 @@ const roleHarvester = {
 
     const creepStateMachine = {
       states: {
-        [MOVE.HARVEST]: {
+        [ACTION.HARVEST]: {
           run: function (allCreeps) {
             handleHarvest(this, allCreeps, roomName);
           },
           transition: function (allCreeps) {
             if (this.store.getFreeCapacity() == 0) {
-              this.memory.state = MOVE.FEED;
+              this.memory.state = ACTION.FEED;
             }
           },
         },
-        [MOVE.FEED]: {
+        [ACTION.FEED]: {
           run: function (allCreeps) {
             if (
               this.transfer(feedTarget[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
@@ -38,17 +38,17 @@ const roleHarvester = {
             }
           },
           transition: function (allCreeps) {
-            if (creep.store[RESOURCE_ENERGY] == 0) {
-              this.memory.state = MOVE.HARVEST;
-              return MOVE.HARVEST;
+            if (this.store[RESOURCE_ENERGY] == 0) {
+              this.memory.state = ACTION.HARVEST;
+              return ACTION.HARVEST;
             }
             if (feedTarget.length <= 0) {
-              this.memory.state = MOVE.UPGRADE;
-              return MOVE.UPGRADE;
+              this.memory.state = ACTION.UPGRADE;
+              return ACTION.UPGRADE;
             }
           },
         },
-        [MOVE.UPGRADE]: {
+        [ACTION.UPGRADE]: {
           run: function (allCreeps) {
             if (
               this.upgradeController(this.room.controller) == ERR_NOT_IN_RANGE
@@ -59,8 +59,8 @@ const roleHarvester = {
             }
           },
           transition: function (allCreeps) {
-            if (creep.store[RESOURCE_ENERGY] == 0) {
-              this.memory.state = MOVE.HARVEST;
+            if (this.store[RESOURCE_ENERGY] == 0) {
+              this.memory.state = ACTION.HARVEST;
             }
           },
         },
