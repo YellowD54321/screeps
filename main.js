@@ -1,6 +1,7 @@
-const roleHarvester = require("role_harvester");
-const roleBuilder = require("role_builder");
-const { HARVESTER, BUILDER } = require("contant");
+const roleHarvester = require("./role_harvester");
+const roleBuilder = require("./role_builder");
+const roleTower = require("./role_tower");
+const { HARVESTER, BUILDER, ACTION } = require("contant");
 const {
   getAllCreeps,
   getHarvesters,
@@ -36,11 +37,16 @@ module.exports.loop = function () {
   // Run every creep
   handleCreepMove();
 
+  // Run every tower
+  handleTowerMove();
+
   // Create extensions
   handleCreateExtensions();
 
   // Create Tower
   handleCreateTower();
+
+  deleteAllRebuildConstructionMemory(getRoomName());
 };
 
 function autoRebuildConstruction() {
@@ -204,10 +210,29 @@ function getLevelThreeLaborBody() {
  * @param {String} creepName
  * @param {Array} creepBody
  * @param {Object} initMemory other memory data
+ * OK	0
+ * The operation has been scheduled successfully.
  *
+ * ERR_NOT_OWNER	-1
+ * You are not the owner of this spawn.
+ *
+ * ERR_NAME_EXISTS	-3
+ * There is a creep with the same name already.
+ *
+ * ERR_BUSY	-4
+ * The spawn is already in process of spawning another creep.
+ *
+ * ERR_NOT_ENOUGH_ENERGY	-6
+ * The spawn and its extensions contain not enough energy to create a creep with the given body.
+ *
+ * ERR_INVALID_ARGS	-10
+ * Body is not properly described or name was not provided.
+ *
+ * ERR_RCL_NOT_ENOUGH	-14
+ * Your Room Controller level is insufficient to use this spawn.
  */
 function spawnCreep({ spawnName, creepName, creepBody, memory }) {
-  Game.spawns[spawnName].spawnCreep(creepBody, creepName, {
+  const result = Game.spawns[spawnName].spawnCreep(creepBody, creepName, {
     memory,
   });
 }
@@ -291,6 +316,18 @@ function handleCreepMove() {
   }
 }
 
+function handleTowerMove() {
+  const roomName = getRoomName();
+  const towers = Game.rooms[roomName].find(FIND_MY_STRUCTURES, {
+    filter: (structure) => {
+      return structure.structureType === STRUCTURE_TOWER;
+    },
+  });
+  for (const tower of towers) {
+    roleTower.run(tower);
+  }
+}
+
 function isValidPosition(targetX, targetY) {
   const roomName = getRoomName();
   const targetPositionItems = Game.rooms[roomName].lookAt(targetX, targetY);
@@ -346,7 +383,7 @@ function getNextExtensionPosition(existAmount, originPosition) {
   let targetX = originPosition.x + extensionX;
   let targetY = originPosition.y + extensionY;
 
-  if (!isValidPosition()) {
+  if (!isValidPosition(targetX, targetY)) {
     const validPosition = getNextExtensionPosition(
       existAmount + 1,
       originPosition
@@ -357,7 +394,7 @@ function getNextExtensionPosition(existAmount, originPosition) {
 
   return {
     x: targetX,
-    y: targetX,
+    y: targetY,
   };
 }
 
@@ -386,6 +423,9 @@ function handleCreateExtensions() {
 
   const nextPosition = getNextExtensionPosition(extensionAmount, spawnPosition);
 
+  console.log("x", nextPosition.x);
+  console.log("y", nextPosition.y);
+
   Game.rooms[roomName].createConstructionSite(
     nextPosition.x,
     nextPosition.y,
@@ -411,6 +451,45 @@ function getMaxTowerAmount() {
   return 0;
 }
 
+function getNextTowerPosition(towerAmount, originPosition) {
+  const ONE_ROUND_NUMBER = 4;
+  const currentRoundNumber = Math.ceil(towerAmount / ONE_ROUND_NUMBER);
+  let dx = currentRoundNumber;
+  let dy = currentRoundNumber;
+
+  switch (towerAmount % 4) {
+    case 0:
+      // both number are positive
+      break;
+    case 1:
+      dx *= -1;
+      break;
+    case 2:
+      dx *= -1;
+      dy *= -1;
+      break;
+    case 3:
+      dy *= -1;
+      break;
+    default:
+    // both number are positive
+  }
+
+  let targetX = originPosition.x + dx;
+  let targetY = originPosition.y + dy;
+
+  if (!isValidPosition(targetX, targetY)) {
+    const validPosition = getNextTowerPosition(towerAmount + 1, originPosition);
+    targetX = validPosition.x;
+    targetY = validPosition.y;
+  }
+
+  return {
+    x: targetX,
+    y: targetY,
+  };
+}
+
 function handleCreateTower() {
   const roomName = getRoomName();
   const MAX_TOWER_AMOUNT = getMaxTowerAmount();
@@ -433,11 +512,7 @@ function handleCreateTower() {
     x: currentSpwan.pos.x,
     y: currentSpwan.pos.y,
   };
-  const towerPosition = {
-    x: spawnPosition.x + 1,
-    y: spawnPosition.y + 1,
-  };
-
+  const towerPosition = getNextTowerPosition(currentTowerAmount, spawnPosition);
   Game.rooms[roomName].createConstructionSite(
     towerPosition.x,
     towerPosition.y,
