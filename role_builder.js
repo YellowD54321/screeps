@@ -137,7 +137,7 @@ function getNextTargetConstruct(creep, roomName) {
   for (const target of repairTargets) {
     if (isRpairableRampart(target)) {
       sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].move = MOVE.REPAIR;
+      sortedTargets[sortedTargets.length - 1].action = ACTION.REPAIR;
       sortedTargets[sortedTargets.length - 1].missionHits =
         currentStructureHitPoint;
     }
@@ -147,7 +147,7 @@ function getNextTargetConstruct(creep, roomName) {
   for (const target of buildTargets) {
     if (target.structureType === "tower") {
       sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].move = MOVE.BUILD;
+      sortedTargets[sortedTargets.length - 1].action = ACTION.BUILD;
       sortedTargets[sortedTargets.length - 1].missionHits =
         target.progressTotal;
     }
@@ -157,7 +157,7 @@ function getNextTargetConstruct(creep, roomName) {
   for (const target of buildTargets) {
     if (target.structureType == "constructedWall") {
       sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].move = MOVE.BUILD;
+      sortedTargets[sortedTargets.length - 1].action = ACTION.BUILD;
       sortedTargets[sortedTargets.length - 1].missionHits =
         target.progressTotal;
     }
@@ -167,7 +167,7 @@ function getNextTargetConstruct(creep, roomName) {
   for (const target of buildTargets) {
     if (target.structureType == "rampart") {
       sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].move = MOVE.BUILD;
+      sortedTargets[sortedTargets.length - 1].action = ACTION.BUILD;
       sortedTargets[sortedTargets.length - 1].missionHits =
         target.progressTotal;
     }
@@ -177,7 +177,7 @@ function getNextTargetConstruct(creep, roomName) {
   for (const target of repairTargets) {
     if (isRepairedWall(target)) {
       sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].move = MOVE.REPAIR;
+      sortedTargets[sortedTargets.length - 1].action = ACTION.REPAIR;
       sortedTargets[sortedTargets.length - 1].missionHits =
         currentStructureHitPoint;
     }
@@ -187,7 +187,7 @@ function getNextTargetConstruct(creep, roomName) {
   for (const target of buildTargets) {
     if (target.structureType == "extension") {
       sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].move = MOVE.BUILD;
+      sortedTargets[sortedTargets.length - 1].action = ACTION.BUILD;
       sortedTargets[sortedTargets.length - 1].missionHits =
         target.progressTotal;
     }
@@ -222,11 +222,11 @@ function isMissionComplete(creep) {
   const targetConstruct = Game.getObjectById(creep.memory.targetConstruct.id);
   if (!targetConstruct) return true;
 
-  if (creep.memory.targetConstruct.move == MOVE.BUILD) {
+  if (creep.memory.targetConstruct.action == ACTION.BUILD) {
     return targetConstruct.progress >= creep.memory.targetConstruct.missionHits;
   }
 
-  if (creep.memory.targetConstruct.move == MOVE.REPAIR) {
+  if (creep.memory.targetConstruct.action == ACTION.REPAIR) {
     return targetConstruct.hits >= creep.memory.targetConstruct.missionHits;
   }
 

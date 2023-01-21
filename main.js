@@ -37,14 +37,14 @@ module.exports.loop = function () {
   // Run every creep
   handleCreepMove();
 
-  // Run every tower
-  handleTowerMove();
-
   // Create extensions
   handleCreateExtensions();
 
   // Create Tower
   handleCreateTower();
+
+  // Run every tower
+  handleTowerMove();
 
   deleteAllRebuildConstructionMemory(getRoomName());
 };
@@ -296,6 +296,8 @@ function handleCreepMove() {
   const roomName = getRoomName();
   for (const creepName in Game.creeps) {
     const creep = Game.creeps[creepName];
+    console.log("creep", creep);
+    console.log("creep.memory.state", creep.memory.state);
     if (!creep.memory.state) {
       console.log("initialize creep state.");
       creep.memory.state = INIT_STATE;
@@ -422,9 +424,6 @@ function handleCreateExtensions() {
   const extensionAmount = extensions.length + buildingExtensions.length;
 
   const nextPosition = getNextExtensionPosition(extensionAmount, spawnPosition);
-
-  console.log("x", nextPosition.x);
-  console.log("y", nextPosition.y);
 
   Game.rooms[roomName].createConstructionSite(
     nextPosition.x,
