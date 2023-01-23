@@ -133,13 +133,13 @@ function getNextTargetConstruct(creep, roomName) {
     }
   }
 
-  // Repair ramparts
-  for (const target of repairTargets) {
-    if (isRpairableRampart(target)) {
+  // Build extensions
+  for (const target of buildTargets) {
+    if (target.structureType == "extension") {
       sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].action = ACTION.REPAIR;
+      sortedTargets[sortedTargets.length - 1].action = ACTION.BUILD;
       sortedTargets[sortedTargets.length - 1].missionHits =
-        currentStructureHitPoint;
+        target.progressTotal;
     }
   }
 
@@ -150,6 +150,16 @@ function getNextTargetConstruct(creep, roomName) {
       sortedTargets[sortedTargets.length - 1].action = ACTION.BUILD;
       sortedTargets[sortedTargets.length - 1].missionHits =
         target.progressTotal;
+    }
+  }
+
+  // Repair ramparts
+  for (const target of repairTargets) {
+    if (isRpairableRampart(target)) {
+      sortedTargets.push(target);
+      sortedTargets[sortedTargets.length - 1].action = ACTION.REPAIR;
+      sortedTargets[sortedTargets.length - 1].missionHits =
+        currentStructureHitPoint;
     }
   }
 
@@ -180,16 +190,6 @@ function getNextTargetConstruct(creep, roomName) {
       sortedTargets[sortedTargets.length - 1].action = ACTION.REPAIR;
       sortedTargets[sortedTargets.length - 1].missionHits =
         currentStructureHitPoint;
-    }
-  }
-
-  // Build extensions
-  for (const target of buildTargets) {
-    if (target.structureType == "extension") {
-      sortedTargets.push(target);
-      sortedTargets[sortedTargets.length - 1].action = ACTION.BUILD;
-      sortedTargets[sortedTargets.length - 1].missionHits =
-        target.progressTotal;
     }
   }
 
