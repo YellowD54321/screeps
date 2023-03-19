@@ -1,0 +1,25 @@
+{
+  "name": "yellowdscreps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YellowD54321/screeps.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YellowD54321/screeps/issues"
+  },
+  "homepage": "https://github.com/YellowD54321/screeps#readme",
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-contrib-concat": "^2.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^5.2.2"
+  }
+}

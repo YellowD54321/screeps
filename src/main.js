@@ -1,4 +1,4 @@
-const roleMiner = require("./creep_miner");
+const roleMiner = require("./creep/miner");
 const roleHarvester = require("./role_harvester");
 const roleBuilder = require("./role_builder");
 const roleTower = require("./role_tower");
