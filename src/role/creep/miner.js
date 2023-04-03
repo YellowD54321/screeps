@@ -1,5 +1,5 @@
-const { ACTION } = require("contant");
-const { handleHarvest } = require("role_regular");
+const { ACTION } = require("../../utils/constants");
+const { handleHarvest } = require("./regular");
 
 const roleMiner = {
   /**

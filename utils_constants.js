@@ -17,4 +17,6 @@ const ACTION = {
   ATTACK: "ATTACK",
 };
 
-module.exports = { HARVESTER, BUILDER, MINER, COLOR, ACTION };
+const INIT_STATE = "HARVEST";
+
+module.exports = { HARVESTER, BUILDER, MINER, COLOR, ACTION, INIT_STATE };

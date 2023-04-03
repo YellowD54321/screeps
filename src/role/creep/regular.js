@@ -1,4 +1,5 @@
-const { COLOR } = require("./contant");
+const { COLOR } = require("../../utils/constants");
+
 function handleHarvest(creep, allCreeps, room) {
   const sources = creep.room.find(FIND_SOURCES);
   if (!!creep.memory.sourceHarvesting.sourceId) {

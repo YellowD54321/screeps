@@ -1,5 +1,6 @@
-const { COLOR, ACTION } = require("./contant");
-const { handleHarvest } = require("./role_regular");
+const { COLOR, ACTION } = require("./utils_constants");
+const { handleHarvest } = require("./role_creep_regular");
+
 const roleHarvester = {
   /** @param {Creep} creep **/
   run: function (creep, room) {

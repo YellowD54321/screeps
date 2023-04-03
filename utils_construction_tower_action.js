@@ -1,13 +1,3 @@
-const roleTower = {
-  run: function (tower) {
-    const attackTarget = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-    if (attackTarget) {
-      handleTowerAttack(tower, attackTarget);
-    }
-  },
-};
-
-module.exports = roleTower;
 /**
  *
  * OK	0
@@ -35,11 +25,15 @@ const ATTACK_RESULT_TEXT = {
   "-14": "ERR_RCL_NOT_ENOUGH",
 };
 
-function handleTowerAttack(tower, target) {
+const handleTowerAttack = (tower, target) => {
   console.log(`tower ${tower} is attacking`);
   console.log(`target is ${target}`);
   const attackResult = tower.attack(target);
   if (attackResult !== 0) {
     console.log("attackResult" + ATTACK_RESULT_TEXT[attackResult]);
   }
-}
+};
+
+module.exports = {
+  handleTowerAttack,
+};
